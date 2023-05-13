@@ -12,7 +12,8 @@ require('dotenv').config()
 app.use(cors())
 app.use(express.json())
 
-
+//jwt
+const jwt = require('jsonwebtoken');
 
 
 // mongoDB
@@ -38,6 +39,29 @@ async function run() {
 
         //booking
         const bookingCollection = client.db('carDoctor').collection('bookings')
+
+
+        //jwt
+        //post because we want a user information from client site
+        app.post('/jwt', (req,res)=>{
+            const user = req.body;
+            console.log(user);
+
+            /* jwt.sign({
+                data: 'foobar'
+              }, 'secret', { expiresIn: '1h' }); */
+
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+            console.log(token);
+            //convert the token in a object as  fetch in client expects an object 
+            res.send({token})
+        })
+
+
+
+
+
+
 
 
 

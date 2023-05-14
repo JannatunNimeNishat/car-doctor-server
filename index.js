@@ -26,12 +26,15 @@ const client = new MongoClient(uri, {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-    }
+    },
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+    maxPoolSize:10,
 });
 
 
 //jwt function 
-const verifyJWT = (req,res,next)=>{
+/* const verifyJWT = (req,res,next)=>{
     console.log('inside verify');
     const authorization = req.headers.authorization;
     console.log(authorization);
@@ -47,7 +50,7 @@ const verifyJWT = (req,res,next)=>{
         req.decoded = decoded
         next();
     })
-}
+} */
 
 
 
@@ -55,7 +58,7 @@ const verifyJWT = (req,res,next)=>{
 
 
 //jwt function 
-/* const verifyJWT = (req, res, next) => {
+const verifyJWT = (req, res, next) => {
     console.log('hitting verify jwt');
     console.log(req.headers.authorization);
     const authorization = req.headers.authorization;
@@ -77,12 +80,21 @@ const verifyJWT = (req,res,next)=>{
         next();
     })
 
-} */
+}
 
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // new
+        //await client.connect();
+        client.connect((err)=>{
+            if(err){
+                console.log(err);
+                return;
+            }
+        })
+
+
 
         //service 
         const serviceCollection = client.db('carDoctor').collection('services');
@@ -232,10 +244,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
 
 
 
